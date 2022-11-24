@@ -9,7 +9,7 @@ readme = "README.md"
 documentation = "https://docs.rs/x11oo"
 keywords = [ "X11", "object-oriented"]
 categories = ["api-bindings", "gui"]
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 build = "build.rs"
 exclude = [
@@ -24,3 +24,6 @@ pkg-config = "0.3.24"
 
 [features]
 xfixes = []
+
+[package.metadata.docs.rs]
+all-features = true
