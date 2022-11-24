@@ -8,7 +8,7 @@ use x11::xlib::{
     XSync,
 };
 
-use super::util::discard_const_1;
+use crate::util::discard_const_1;
 
 pub struct Display<'a> {
     display: &'a mut xlib::Display,
