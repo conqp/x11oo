@@ -1,8 +1,20 @@
 [package]
 name = "x11oo"
+authors = ["Richard Neumann <mail@richard-neumann.de>"]
+description = "Object-oriented API to X11"
+license-file = "LICENSE"
+homepage = "https://github.com/conqp/x11oo/"
+repository = "https://github.com/conqp/x11oo/"
+readme = "README.md"
+documentation = "https://docs.rs/x11oo"
+keywords = [ "X11", "object-oriented"]
+categories = ["api-bindings", "gui"]
 version = "0.1.0"
 edition = "2021"
 build = "build.rs"
+exclude = [
+    ".gitignore",
+]
 
 [dependencies]
 x11 = { version = "2.20.1", features = ["xlib"] }
