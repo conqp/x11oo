@@ -4,7 +4,8 @@ use std::ffi::{c_char, CString};
 use x11::xfixes::XFixesHideCursor;
 
 use x11::xlib::{
-    self, XActivateScreenSaver, XAddExtension, XDefaultRootWindow, XExtCodes, XOpenDisplay, XSync,
+    self, Window, XActivateScreenSaver, XAddExtension, XDefaultRootWindow, XExtCodes, XOpenDisplay,
+    XSync,
 };
 
 use super::util::discard_const_1;
@@ -39,12 +40,12 @@ impl<'a> Display<'a> {
         unsafe { *XAddExtension(self.display) }
     }
 
-    pub fn default_root_window(&mut self) -> u64 {
+    pub fn default_root_window(&mut self) -> Window {
         unsafe { XDefaultRootWindow(self.display) }
     }
 
     #[cfg(feature = "xfixes")]
-    pub fn hide_cursor(&mut self, window: u64) {
+    pub fn hide_cursor(&mut self, window: Window) {
         unsafe { XFixesHideCursor(self.display, window) }
     }
 
