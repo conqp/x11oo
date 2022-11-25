@@ -1,5 +1,8 @@
 use crate::util::IsAlways;
+use std::any::Any;
 use std::ffi::{c_char, CString};
+use std::fmt::{Debug, Formatter};
+use std::ops::Deref;
 use x11::xlib::{
     self, Window, XActivateScreenSaver, XAddExtension, XAddHost, XAddHosts, XAddToSaveSet,
     XDefaultRootWindow, XExtCodes, XHostAddress, XOpenDisplay, XSync,
@@ -74,5 +77,14 @@ impl<'a> Display<'a> {
 impl<'a> Display<'a> {
     pub fn hide_cursor(&mut self, window: Window) {
         unsafe { XFixesHideCursor(self.display, window) }
+    }
+}
+
+impl<'a> Debug for Display<'a> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Display")
+            .field("display", &self.display.deref().type_id())
+            .field("name", &self.name)
+            .finish()
     }
 }
