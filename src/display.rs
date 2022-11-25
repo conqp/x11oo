@@ -1,4 +1,4 @@
-use crate::util::discard_const_1;
+use crate::util::ExpectOne;
 use std::ffi::{c_char, CString};
 use x11::xlib::{
     self, Window, XActivateScreenSaver, XAddExtension, XAddHost, XAddHosts, XAddToSaveSet,
@@ -28,10 +28,7 @@ impl<'a> Display<'a> {
     }
 
     pub fn activate_screen_saver(&mut self) {
-        discard_const_1(
-            unsafe { XActivateScreenSaver(self.display) },
-            "XActivateScreenSaver",
-        )
+        unsafe { XActivateScreenSaver(self.display) }.expect_one()
     }
 
     pub fn add_extension(&mut self) -> XExtCodes {
@@ -39,18 +36,15 @@ impl<'a> Display<'a> {
     }
 
     pub fn add_host(&mut self, address: &mut XHostAddress) {
-        discard_const_1(unsafe { XAddHost(self.display, address) }, "XAddHost")
+        unsafe { XAddHost(self.display, address) }.expect_one()
     }
 
     pub fn add_hosts(&mut self, address: &mut XHostAddress, n: i32) {
-        discard_const_1(unsafe { XAddHosts(self.display, address, n) }, "XAddHosts")
+        unsafe { XAddHosts(self.display, address, n) }.expect_one()
     }
 
     pub fn add_to_save_set(&mut self, window: Window) {
-        discard_const_1(
-            unsafe { XAddToSaveSet(self.display, window) },
-            "XAddToSaveSet",
-        )
+        unsafe { XAddToSaveSet(self.display, window) }.expect_one()
     }
 
     // TODO: implement all xlib functions that take a display as first argument as methods.
@@ -60,7 +54,7 @@ impl<'a> Display<'a> {
     }
 
     pub fn sync(&mut self, discard: bool) {
-        discard_const_1(unsafe { XSync(self.display, discard as i32) }, "XSync")
+        unsafe { XSync(self.display, discard as i32) }.expect_one()
     }
 }
 

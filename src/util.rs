@@ -1,7 +1,12 @@
-#[inline]
-pub(crate) fn discard_const_1(retval: i32, name: &str) {
-    match retval {
-        1 => (),
-        _ => unreachable!("{} always returns 1.", name),
+pub(crate) trait ExpectOne {
+    fn expect_one(&self);
+}
+
+impl ExpectOne for i32 {
+    fn expect_one(&self) {
+        match self {
+            1 => (),
+            _ => unreachable!("Function always returns 1."),
+        }
     }
 }
