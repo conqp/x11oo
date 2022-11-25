@@ -44,12 +44,14 @@ impl<'a> Display<'a> {
         unsafe { XDefaultRootWindow(self.display) }
     }
 
-    #[cfg(feature = "xfixes")]
-    pub fn hide_cursor(&mut self, window: Window) {
-        unsafe { XFixesHideCursor(self.display, window) }
-    }
-
     pub fn sync(&mut self, discard: bool) {
         discard_const_1(unsafe { XSync(self.display, discard as i32) }, "XSync")
+    }
+}
+
+#[cfg(feature = "xfixes")]
+impl<'a> Display<'a> {
+    pub fn hide_cursor(&mut self, window: Window) {
+        unsafe { XFixesHideCursor(self.display, window) }
     }
 }
