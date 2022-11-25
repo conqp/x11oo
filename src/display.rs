@@ -4,8 +4,8 @@ use std::ffi::{c_char, CString};
 use x11::xfixes::XFixesHideCursor;
 
 use x11::xlib::{
-    self, Window, XActivateScreenSaver, XAddExtension, XAddHost, XAddHosts, XDefaultRootWindow,
-    XExtCodes, XHostAddress, XOpenDisplay, XSync,
+    self, Window, XActivateScreenSaver, XAddExtension, XAddHost, XAddHosts, XAddPixel,
+    XDefaultRootWindow, XExtCodes, XHostAddress, XImage, XOpenDisplay, XSync,
 };
 
 use crate::util::discard_const_1;
@@ -46,6 +46,10 @@ impl<'a> Display<'a> {
 
     pub fn add_hosts(&mut self, address: &mut XHostAddress, n: i32) {
         discard_const_1(unsafe { XAddHosts(self.display, address, n) }, "XAddHosts")
+    }
+
+    pub fn add_pixel(&mut self, image: &mut XImage, value: i64) {
+        discard_const_1(unsafe { XAddPixel(image, value) }, "XAddPixel")
     }
 
     pub fn default_root_window(&mut self) -> Window {
