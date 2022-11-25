@@ -1,4 +1,5 @@
-use std::ffi::{c_char, CString};
+use std::ffi::CString;
+use std::os::raw::c_char;
 
 #[cfg(feature = "xfixes")]
 use x11::xfixes::XFixesHideCursor;
