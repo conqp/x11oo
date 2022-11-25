@@ -1,12 +1,12 @@
-pub(crate) trait ExpectOne {
-    fn expect_one(&self);
+pub(crate) trait Returns<T> {
+    fn returns(&self, retval: T);
 }
 
-impl ExpectOne for i32 {
-    fn expect_one(&self) {
+impl Returns<i32> for i32 {
+    fn returns(&self, retval: i32) {
         match self {
-            1 => (),
-            _ => unreachable!("Function always returns 1."),
+            _ if *self == retval => (),
+            _ => unreachable!("Always returns {}.", retval),
         }
     }
 }
