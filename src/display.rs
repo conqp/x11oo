@@ -10,21 +10,33 @@ use x11::xfixes::XFixesHideCursor;
 
 pub struct Display<'a> {
     display: &'a mut xlib::Display,
+    name: Option<String>,
 }
 
 impl<'a> Display<'a> {
     pub fn open(name: Option<impl Into<String>>) -> Option<Self> {
         match name {
-            Some(name) => match CString::new(name.into()) {
-                Ok(name) => Self::open_raw(name.as_ptr()),
-                Err(_) => None,
-            },
-            None => Self::open_raw(&0),
+            Some(name) => Self::open_name(name.into()),
+            None => Self::open_raw(&0, None),
         }
     }
 
-    fn open_raw(display: *const c_char) -> Option<Self> {
-        unsafe { XOpenDisplay(display).as_mut() }.map(|display| Self { display })
+    fn open_name(name: String) -> Option<Self> {
+        match CString::new(name.clone()) {
+            Ok(cstring) => Self::open_raw(cstring.as_ptr(), Some(name)),
+            Err(_) => None,
+        }
+    }
+
+    fn open_raw(display: *const c_char, name: Option<String>) -> Option<Self> {
+        unsafe { XOpenDisplay(display).as_mut() }.map(|display| Self { display, name })
+    }
+
+    pub fn name(&self) -> Option<&str> {
+        match &self.name {
+            Some(name) => Some(name),
+            None => None,
+        }
     }
 
     pub fn activate_screen_saver(&mut self) {
