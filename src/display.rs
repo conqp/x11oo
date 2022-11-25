@@ -5,7 +5,8 @@ use x11::xfixes::XFixesHideCursor;
 
 use x11::xlib::{
     self, Window, XActivateScreenSaver, XAddExtension, XAddHost, XAddHosts, XAddPixel,
-    XDefaultRootWindow, XExtCodes, XHostAddress, XImage, XOpenDisplay, XSync,
+    XAddToExtensionList, XDefaultRootWindow, XExtCodes, XExtData, XHostAddress, XImage,
+    XOpenDisplay, XSync,
 };
 
 use crate::util::discard_const_1;
@@ -54,6 +55,17 @@ impl<'a> Display<'a> {
 
     pub fn default_root_window(&mut self) -> Window {
         unsafe { XDefaultRootWindow(self.display) }
+    }
+
+    pub fn add_to_extension_list(
+        &mut self,
+        structure: &mut *mut XExtData,
+        ext_data: &mut XExtData,
+    ) {
+        discard_const_1(
+            unsafe { XAddToExtensionList(structure, ext_data) },
+            "XAddToExtensionList",
+        )
     }
 
     pub fn sync(&mut self, discard: bool) {
