@@ -46,10 +46,6 @@ impl<'a> Display<'a> {
         discard_const_1(unsafe { XAddHosts(self.display, address, n) }, "XAddHosts")
     }
 
-    pub fn default_root_window(&mut self) -> Window {
-        unsafe { XDefaultRootWindow(self.display) }
-    }
-
     pub fn add_to_save_set(&mut self, window: Window) {
         discard_const_1(
             unsafe { XAddToSaveSet(self.display, window) },
@@ -58,6 +54,10 @@ impl<'a> Display<'a> {
     }
 
     // TODO: implement all xlib functions that take a display as first argument as methods.
+
+    pub fn default_root_window(&mut self) -> Window {
+        unsafe { XDefaultRootWindow(self.display) }
+    }
 
     pub fn sync(&mut self, discard: bool) {
         discard_const_1(unsafe { XSync(self.display, discard as i32) }, "XSync")
