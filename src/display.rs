@@ -68,6 +68,8 @@ impl<'a> Display<'a> {
         )
     }
 
+    // TODO: implement all xlib functions that take a display as first argument as methods.
+
     pub fn sync(&mut self, discard: bool) {
         discard_const_1(unsafe { XSync(self.display, discard as i32) }, "XSync")
     }
