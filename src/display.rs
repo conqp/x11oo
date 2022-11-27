@@ -88,19 +88,19 @@ impl Display {
     }
 }
 
+#[cfg(feature = "xfixes")]
+impl Display {
+    pub fn hide_cursor(&self, window: Window) {
+        unsafe { XFixesHideCursor(self.display.as_ptr(), window) }
+    }
+}
+
 impl Drop for Display {
     fn drop(&mut self) {
         match unsafe { XCloseDisplay(self.display.as_ptr()) } {
             0 => (),
             _ => panic!("could not close display"),
         }
-    }
-}
-
-#[cfg(feature = "xfixes")]
-impl Display {
-    pub fn hide_cursor(&self, window: Window) {
-        unsafe { XFixesHideCursor(self.display.as_ptr(), window) }
     }
 }
 
