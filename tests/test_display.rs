@@ -2,11 +2,17 @@ use x11oo::Display;
 
 #[test]
 fn test_debug() {
-    let display = Display::open(None::<String>);
-    assert!(display.is_ok());
-    println!("{:?}", display.unwrap());
+    match Display::open(None::<String>) {
+        Ok(display) => println!("{:?}", display),
+        Err(err) => {
+            panic!("{:?}", err);
+        }
+    }
 
-    let display = Display::open(Some(":0"));
-    assert!(display.is_ok());
-    println!("{:?}", display.unwrap());
+    match Display::open(Some(":0")) {
+        Ok(display) => println!("{:?}", display),
+        Err(err) => {
+            panic!("{:?}", err);
+        }
+    }
 }
