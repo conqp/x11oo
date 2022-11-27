@@ -64,12 +64,12 @@ impl Display {
         unsafe { *XAddExtension(self.display.as_ptr()) }
     }
 
-    pub fn add_host(&self, address: &mut XHostAddress) {
-        unsafe { XAddHost(self.display.as_ptr(), address) }.panic_if_zero()
+    pub fn add_host(&self, address: NonNull<XHostAddress>) {
+        unsafe { XAddHost(self.display.as_ptr(), address.as_ptr()) }.panic_if_zero()
     }
 
-    pub fn add_hosts(&self, address: &mut XHostAddress, n: i32) {
-        unsafe { XAddHosts(self.display.as_ptr(), address, n) }.panic_if_zero()
+    pub fn add_hosts(&self, address: NonNull<XHostAddress>, n: i32) {
+        unsafe { XAddHosts(self.display.as_ptr(), address.as_ptr(), n) }.panic_if_zero()
     }
 
     pub fn add_to_save_set(&self, window: Window) {
