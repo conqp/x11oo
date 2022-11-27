@@ -37,16 +37,14 @@ impl Display {
     }
 
     fn open_raw(display: *const c_char, name: Option<String>) -> Result<Self, DisplayError> {
-        unsafe {
-            let display = XOpenDisplay(display);
+        let display = unsafe { XOpenDisplay(display) };
 
-            if display.is_null() {
-                Err(DisplayError::CannotOpenDisplay)
-            } else {
-                match NonNull::new(display) {
-                    Some(display) => Ok(Self { display, name }),
-                    None => Err(DisplayError::CannotOpenDisplay),
-                }
+        if display.is_null() {
+            Err(DisplayError::CannotOpenDisplay)
+        } else {
+            match NonNull::new(display) {
+                Some(display) => Ok(Self { display, name }),
+                None => Err(DisplayError::CannotOpenDisplay),
             }
         }
     }
