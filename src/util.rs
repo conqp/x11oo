@@ -1,12 +1,12 @@
-pub(crate) trait IsAlways<T> {
-    fn is_always(&self, retval: T);
+pub(crate) trait PanicOnError {
+    fn panic_if_zero(&self);
 }
 
-impl IsAlways<i32> for i32 {
-    fn is_always(&self, retval: i32) {
+impl PanicOnError for i32 {
+    fn panic_if_zero(&self) {
         match self {
-            _ if *self == retval => (),
-            _ => unreachable!("Always returns {}.", retval),
+            0 => panic!("X11 Function returned error."),
+            _ => (),
         }
     }
 }

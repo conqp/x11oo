@@ -1,4 +1,4 @@
-use crate::util::IsAlways;
+use crate::util::PanicOnError;
 use std::ffi::{c_char, CString};
 use x11::xlib::{
     self, Window, XActivateScreenSaver, XAddExtension, XAddHost, XAddHosts, XAddToSaveSet,
@@ -41,7 +41,7 @@ impl Display {
     }
 
     pub fn activate_screen_saver(&mut self) {
-        unsafe { XActivateScreenSaver(self.display) }.is_always(1)
+        unsafe { XActivateScreenSaver(self.display) }.panic_if_zero()
     }
 
     pub fn add_extension(&mut self) -> XExtCodes {
@@ -49,15 +49,15 @@ impl Display {
     }
 
     pub fn add_host(&mut self, address: &mut XHostAddress) {
-        unsafe { XAddHost(self.display, address) }.is_always(1)
+        unsafe { XAddHost(self.display, address) }.panic_if_zero()
     }
 
     pub fn add_hosts(&mut self, address: &mut XHostAddress, n: i32) {
-        unsafe { XAddHosts(self.display, address, n) }.is_always(1)
+        unsafe { XAddHosts(self.display, address, n) }.panic_if_zero()
     }
 
     pub fn add_to_save_set(&mut self, window: Window) {
-        unsafe { XAddToSaveSet(self.display, window) }.is_always(1)
+        unsafe { XAddToSaveSet(self.display, window) }.panic_if_zero()
     }
 
     // TODO: implement all xlib functions that take a display as first argument as methods.
@@ -67,7 +67,7 @@ impl Display {
     }
 
     pub fn sync(&mut self, discard: bool) {
-        unsafe { XSync(self.display, discard as i32) }.is_always(1)
+        unsafe { XSync(self.display, discard as i32) }.panic_if_zero()
     }
 }
 

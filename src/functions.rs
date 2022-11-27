@@ -1,10 +1,10 @@
-use crate::util::IsAlways;
+use crate::util::PanicOnError;
 use std::borrow::BorrowMut;
 use std::ops::DerefMut;
 use x11::xlib::{XAddPixel, XAddToExtensionList, XExtData, XImage};
 
 pub fn add_pixel(image: &mut XImage, value: i64) {
-    unsafe { XAddPixel(image, value) }.is_always(1)
+    unsafe { XAddPixel(image, value) }.panic_if_zero()
 }
 
 pub fn add_to_extension_list(structure: &mut &mut XExtData, ext_data: &mut XExtData) {
@@ -14,5 +14,5 @@ pub fn add_to_extension_list(structure: &mut &mut XExtData, ext_data: &mut XExtD
             ext_data,
         )
     }
-    .is_always(1)
+    .panic_if_zero()
 }
