@@ -14,23 +14,31 @@ pub struct Display {
     name: Option<String>,
 }
 
+pub enum DisplayError {
+    CannotOpenDisplay,
+    InvalidDisplayName,
+}
+
 impl Display {
-    pub fn open(name: Option<impl Into<String>>) -> Option<Self> {
+    pub fn open(name: Option<impl Into<String>>) -> Result<Self, DisplayError> {
         match name {
             Some(name) => Self::open_name(name.into()),
             None => Self::open_raw(&0, None),
         }
     }
 
-    fn open_name(name: String) -> Option<Self> {
+    fn open_name(name: String) -> Result<Self, DisplayError> {
         match CString::new(name.clone()) {
             Ok(cstring) => Self::open_raw(cstring.as_ptr(), Some(name)),
-            Err(_) => None,
+            Err(_) => Err(DisplayError::InvalidDisplayName),
         }
     }
 
-    fn open_raw(display: *const c_char, name: Option<String>) -> Option<Self> {
-        unsafe { XOpenDisplay(display).as_mut() }.map(|display| Self { display, name })
+    fn open_raw(display: *const c_char, name: Option<String>) -> Result<Self, DisplayError> {
+        match unsafe { XOpenDisplay(display).as_mut() } {
+            Some(display) => Ok(Self { display, name }),
+            None => Err(DisplayError::CannotOpenDisplay),
+        }
     }
 
     pub fn name(&self) -> Option<&str> {
