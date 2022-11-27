@@ -15,6 +15,7 @@ pub struct Display {
     name: Option<String>,
 }
 
+#[derive(Debug)]
 pub enum DisplayError {
     CannotOpenDisplay,
     InvalidDisplayName,
