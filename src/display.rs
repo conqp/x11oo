@@ -1,5 +1,6 @@
 use crate::util::PanicOnError;
 use std::ffi::{c_char, CString};
+use std::fmt::Formatter;
 use std::ptr::NonNull;
 use x11::xlib::{
     self, Window, XActivateScreenSaver, XAddExtension, XAddHost, XAddHosts, XAddToSaveSet,
@@ -100,5 +101,14 @@ impl Drop for Display {
 impl Display {
     pub fn hide_cursor(&self, window: Window) {
         unsafe { XFixesHideCursor(self.display.as_ptr(), window) }
+    }
+}
+
+impl std::fmt::Display for DisplayError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::CannotOpenDisplay => write!(f, "Cannot open display"),
+            Self::InvalidDisplayName => write!(f, "Invalid display name"),
+        }
     }
 }
