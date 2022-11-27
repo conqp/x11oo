@@ -3,7 +3,7 @@ use std::ffi::{c_char, CString};
 use std::ptr::NonNull;
 use x11::xlib::{
     self, Window, XActivateScreenSaver, XAddExtension, XAddHost, XAddHosts, XAddToSaveSet,
-    XDefaultRootWindow, XExtCodes, XHostAddress, XOpenDisplay, XSync,
+    XCloseDisplay, XDefaultRootWindow, XExtCodes, XHostAddress, XOpenDisplay, XSync,
 };
 
 #[cfg(feature = "xfixes")]
@@ -84,6 +84,12 @@ impl Display {
 
     pub fn sync(&mut self, discard: bool) {
         unsafe { XSync(self.display.as_ptr(), discard as i32) }.panic_if_zero()
+    }
+}
+
+impl Drop for Display {
+    fn drop(&mut self) {
+        unsafe { XCloseDisplay(self.display.as_ptr()).panic_if_zero() }
     }
 }
 
