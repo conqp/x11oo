@@ -56,33 +56,33 @@ impl Display {
         }
     }
 
-    pub fn activate_screen_saver(&mut self) {
+    pub fn activate_screen_saver(&self) {
         unsafe { XActivateScreenSaver(self.display.as_ptr()) }.panic_if_zero()
     }
 
-    pub fn add_extension(&mut self) -> XExtCodes {
+    pub fn add_extension(&self) -> XExtCodes {
         unsafe { *XAddExtension(self.display.as_ptr()) }
     }
 
-    pub fn add_host(&mut self, address: &mut XHostAddress) {
+    pub fn add_host(&self, address: &mut XHostAddress) {
         unsafe { XAddHost(self.display.as_ptr(), address) }.panic_if_zero()
     }
 
-    pub fn add_hosts(&mut self, address: &mut XHostAddress, n: i32) {
+    pub fn add_hosts(&self, address: &mut XHostAddress, n: i32) {
         unsafe { XAddHosts(self.display.as_ptr(), address, n) }.panic_if_zero()
     }
 
-    pub fn add_to_save_set(&mut self, window: Window) {
+    pub fn add_to_save_set(&self, window: Window) {
         unsafe { XAddToSaveSet(self.display.as_ptr(), window) }.panic_if_zero()
     }
 
     // TODO: implement all xlib functions that take a display as first argument as methods.
 
-    pub fn default_root_window(&mut self) -> Window {
+    pub fn default_root_window(&self) -> Window {
         unsafe { XDefaultRootWindow(self.display.as_ptr()) }
     }
 
-    pub fn sync(&mut self, discard: bool) {
+    pub fn sync(&self, discard: bool) {
         unsafe { XSync(self.display.as_ptr(), discard as i32) }.panic_if_zero()
     }
 }
@@ -95,7 +95,7 @@ impl Drop for Display {
 
 #[cfg(feature = "xfixes")]
 impl Display {
-    pub fn hide_cursor(&mut self, window: Window) {
+    pub fn hide_cursor(&self, window: Window) {
         unsafe { XFixesHideCursor(self.display.as_ptr(), window) }
     }
 }
