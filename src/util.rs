@@ -5,7 +5,7 @@ pub(crate) trait PanicOnError {
 impl PanicOnError for i32 {
     fn panic_if_zero(&self) {
         if self == &0 {
-            panic!("X11 Function returned error.")
+            panic!("xlib function returned error")
         }
     }
 }
