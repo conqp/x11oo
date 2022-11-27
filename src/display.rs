@@ -1,8 +1,5 @@
 use crate::util::IsAlways;
-use std::any::Any;
 use std::ffi::{c_char, CString};
-use std::fmt::{Debug, Formatter};
-use std::ops::Deref;
 use x11::xlib::{
     self, Window, XActivateScreenSaver, XAddExtension, XAddHost, XAddHosts, XAddToSaveSet,
     XDefaultRootWindow, XExtCodes, XHostAddress, XOpenDisplay, XSync,
@@ -11,12 +8,13 @@ use x11::xlib::{
 #[cfg(feature = "xfixes")]
 use x11::xfixes::XFixesHideCursor;
 
-pub struct Display<'a> {
-    display: &'a mut xlib::Display,
+#[derive(Debug)]
+pub struct Display {
+    display: *mut xlib::Display,
     name: Option<String>,
 }
 
-impl<'a> Display<'a> {
+impl Display {
     pub fn open(name: Option<impl Into<String>>) -> Option<Self> {
         match name {
             Some(name) => Self::open_name(name.into()),
@@ -74,17 +72,8 @@ impl<'a> Display<'a> {
 }
 
 #[cfg(feature = "xfixes")]
-impl<'a> Display<'a> {
+impl Display {
     pub fn hide_cursor(&mut self, window: Window) {
         unsafe { XFixesHideCursor(self.display, window) }
-    }
-}
-
-impl<'a> Debug for Display<'a> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Display")
-            .field("display", &self.display.deref().type_id())
-            .field("name", &self.name)
-            .finish()
     }
 }
