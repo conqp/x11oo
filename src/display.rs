@@ -99,7 +99,7 @@ impl Drop for Display {
     fn drop(&mut self) {
         match unsafe { XCloseDisplay(self.display.as_ptr()) } {
             0 => (),
-            _ => panic!("could not close display"),
+            _ => panic!("Could not close display"),
         }
     }
 }
