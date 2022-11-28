@@ -1,8 +1,8 @@
-pub(crate) trait PanicOnError {
+pub(crate) trait PanicIfZero {
     fn panic_if_zero(&self);
 }
 
-impl PanicOnError for i32 {
+impl PanicIfZero for i32 {
     fn panic_if_zero(&self) {
         if self == &0 {
             panic!("xlib function returned error")

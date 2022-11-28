@@ -1,4 +1,4 @@
-use crate::util::PanicOnError;
+use crate::util::PanicIfZero;
 use std::ptr::NonNull;
 use x11::xlib::{XAddPixel, XAddToExtensionList, XExtData, XImage};
 

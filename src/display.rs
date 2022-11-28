@@ -1,4 +1,4 @@
-use crate::util::PanicOnError;
+use crate::util::PanicIfZero;
 use std::ffi::{c_char, CString};
 use std::fmt::Formatter;
 use std::ptr::NonNull;
