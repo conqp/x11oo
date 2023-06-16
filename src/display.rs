@@ -31,7 +31,7 @@ impl Display {
     }
 
     fn open_name(name: String) -> Result<Self, DisplayError> {
-        match CString::new(name.clone()) {
+        match CString::new(name.as_str()) {
             Ok(cstring) => Self::open_raw(cstring.as_ptr(), Some(name)),
             Err(_) => Err(DisplayError::InvalidDisplayName),
         }
