@@ -31,10 +31,12 @@ impl Display {
     }
 
     fn open_name(name: String) -> Result<Self, DisplayError> {
-        match CString::new(name.as_str()) {
-            Ok(cstring) => Self::open_raw(cstring.as_ptr(), Some(name)),
-            Err(_) => Err(DisplayError::InvalidDisplayName),
-        }
+        Self::open_raw(
+            CString::new(name.as_str())
+                .map_err(|_| DisplayError::InvalidDisplayName)?
+                .as_ptr(),
+            Some(name),
+        )
     }
 
     fn open_raw(display: *const c_char, name: Option<String>) -> Result<Self, DisplayError> {
