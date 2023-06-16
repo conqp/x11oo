@@ -43,10 +43,9 @@ impl Display {
         if display.is_null() {
             Err(DisplayError::CannotOpenDisplay)
         } else {
-            match NonNull::new(display) {
-                Some(display) => Ok(Self { display, name }),
-                None => Err(DisplayError::CannotOpenDisplay),
-            }
+            NonNull::new(display)
+                .map(|display| Self { display, name })
+                .ok_or(DisplayError::CannotOpenDisplay)
         }
     }
 
