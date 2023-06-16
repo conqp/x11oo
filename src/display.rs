@@ -9,6 +9,7 @@ use x11::xlib::{
 
 #[cfg(feature = "xfixes")]
 use x11::xfixes::XFixesHideCursor;
+#[cfg(feature = "xfixes")]
 use x11::xfixes::XFixesShowCursor;
 
 #[derive(Debug)]
