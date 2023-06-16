@@ -51,10 +51,7 @@ impl Display {
     }
 
     pub fn name(&self) -> Option<&str> {
-        match &self.name {
-            Some(name) => Some(name),
-            None => None,
-        }
+        self.name.as_deref()
     }
 
     pub fn activate_screen_saver(&self) {
