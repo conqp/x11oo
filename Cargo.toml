@@ -9,7 +9,7 @@ readme = "README.md"
 documentation = "https://docs.rs/x11oo"
 keywords = [ "X11", "object-oriented"]
 categories = ["api-bindings", "gui"]
-version = "0.2.3"
+version = "0.2.4"
 edition = "2021"
 build = "build.rs"
 exclude = [
@@ -17,10 +17,10 @@ exclude = [
 ]
 
 [dependencies]
-x11 = { version = "2.20.1", features = ["xlib"] }
+x11 = { version = "2.21.0", features = ["xlib"] }
 
 [build-dependencies]
-pkg-config = "0.3.24"
+pkg-config = "0.3.27"
 
 [features]
 xfixes = []
