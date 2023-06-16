@@ -1,4 +1,4 @@
-use crate::util::PanicIfZero;
+use crate::util::PanicOr;
 use std::ffi::{c_char, CString};
 use std::fmt::Formatter;
 use std::ptr::NonNull;
@@ -56,24 +56,24 @@ impl Display {
         self.name.as_deref()
     }
 
-    pub fn activate_screen_saver(&self) {
-        unsafe { XActivateScreenSaver(self.display.as_ptr()) }.panic_if_zero()
+    pub fn activate_screen_saver(&self) -> &Self {
+        unsafe { XActivateScreenSaver(self.display.as_ptr()) }.panic_or(self)
     }
 
     pub fn add_extension(&self) -> XExtCodes {
         unsafe { *XAddExtension(self.display.as_ptr()) }
     }
 
-    pub fn add_host(&self, address: NonNull<XHostAddress>) {
-        unsafe { XAddHost(self.display.as_ptr(), address.as_ptr()) }.panic_if_zero()
+    pub fn add_host(&self, address: NonNull<XHostAddress>) -> &Self {
+        unsafe { XAddHost(self.display.as_ptr(), address.as_ptr()) }.panic_or(self)
     }
 
-    pub fn add_hosts(&self, address: NonNull<XHostAddress>, n: i32) {
-        unsafe { XAddHosts(self.display.as_ptr(), address.as_ptr(), n) }.panic_if_zero()
+    pub fn add_hosts(&self, address: NonNull<XHostAddress>, n: i32) -> &Self {
+        unsafe { XAddHosts(self.display.as_ptr(), address.as_ptr(), n) }.panic_or(self)
     }
 
-    pub fn add_to_save_set(&self, window: Window) {
-        unsafe { XAddToSaveSet(self.display.as_ptr(), window) }.panic_if_zero()
+    pub fn add_to_save_set(&self, window: Window) -> &Self {
+        unsafe { XAddToSaveSet(self.display.as_ptr(), window) }.panic_or(self)
     }
 
     // TODO: implement all xlib functions that take a display as first argument as methods.
@@ -82,19 +82,21 @@ impl Display {
         unsafe { XDefaultRootWindow(self.display.as_ptr()) }
     }
 
-    pub fn sync(&self, discard: bool) {
-        unsafe { XSync(self.display.as_ptr(), discard as i32) }.panic_if_zero()
+    pub fn sync(&self, discard: bool) -> &Self {
+        unsafe { XSync(self.display.as_ptr(), discard as i32) }.panic_or(self)
     }
 }
 
 #[cfg(feature = "xfixes")]
 impl Display {
-    pub fn hide_cursor(&self, window: Window) {
-        unsafe { XFixesHideCursor(self.display.as_ptr(), window) }
+    pub fn hide_cursor(&self, window: Window) -> &Self {
+        unsafe { XFixesHideCursor(self.display.as_ptr(), window) };
+        self
     }
 
-    pub fn show_cursor(&self, window: Window) {
-        unsafe { XFixesShowCursor(self.display.as_ptr(), window) }
+    pub fn show_cursor(&self, window: Window) -> &Self {
+        unsafe { XFixesShowCursor(self.display.as_ptr(), window) };
+        self
     }
 }
 
