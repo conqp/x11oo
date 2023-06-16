@@ -9,6 +9,7 @@ use x11::xlib::{
 
 #[cfg(feature = "xfixes")]
 use x11::xfixes::XFixesHideCursor;
+use x11::xfixes::XFixesShowCursor;
 
 #[derive(Debug)]
 pub struct Display {
@@ -90,6 +91,10 @@ impl Display {
 impl Display {
     pub fn hide_cursor(&self, window: Window) {
         unsafe { XFixesHideCursor(self.display.as_ptr(), window) }
+    }
+
+    pub fn show_cursor(&self, window: Window) {
+        unsafe { XFixesShowCursor(self.display.as_ptr(), window) }
     }
 }
 
