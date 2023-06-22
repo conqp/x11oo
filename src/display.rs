@@ -12,13 +12,13 @@ use x11::xfixes::XFixesHideCursor;
 #[cfg(feature = "xfixes")]
 use x11::xfixes::XFixesShowCursor;
 
-#[derive(Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Display {
     display: NonNull<xlib::Display>,
     name: Option<String>,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum DisplayError {
     CannotOpenDisplay,
     InvalidDisplayName,
