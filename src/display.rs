@@ -85,7 +85,7 @@ impl Display {
     /// # Panics
     /// Panics on non-zero xlib return code
     pub fn activate_screen_saver(&self) {
-        assert_eq!(unsafe { XActivateScreenSaver(self.display.as_ptr()) }, 0);
+        assert_ne!(unsafe { XActivateScreenSaver(self.display.as_ptr()) }, 0);
     }
 
     #[must_use]
@@ -96,7 +96,7 @@ impl Display {
     /// # Panics
     /// Panics on non-zero xlib return code
     pub fn add_host(&self, address: NonNull<XHostAddress>) {
-        assert_eq!(
+        assert_ne!(
             unsafe { XAddHost(self.display.as_ptr(), address.as_ptr()) },
             0
         );
@@ -105,7 +105,7 @@ impl Display {
     /// # Panics
     /// Panics on non-zero xlib return code
     pub fn add_hosts(&self, address: NonNull<XHostAddress>, n: i32) {
-        assert_eq!(
+        assert_ne!(
             unsafe { XAddHosts(self.display.as_ptr(), address.as_ptr(), n) },
             0
         );
@@ -114,7 +114,7 @@ impl Display {
     /// # Panics
     /// Panics on non-zero xlib return code
     pub fn add_to_save_set(&self, window: Window) {
-        assert_eq!(unsafe { XAddToSaveSet(self.display.as_ptr(), window) }, 0);
+        assert_ne!(unsafe { XAddToSaveSet(self.display.as_ptr(), window) }, 0);
     }
 
     // TODO: implement all xlib functions that take a display as first argument as methods.
@@ -127,7 +127,7 @@ impl Display {
     /// # Panics
     /// Panics on non-zero xlib return code
     pub fn sync(&self, discard: bool) {
-        assert_eq!(
+        assert_ne!(
             unsafe { XSync(self.display.as_ptr(), i32::from(discard)) },
             0
         );
