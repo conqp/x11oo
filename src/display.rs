@@ -28,6 +28,25 @@ impl Display {
     /// # Arguments
     /// * `name` - Optional display name to open
     ///
+    /// # Examples
+    /// ```
+    /// use x11oo::Display;
+    ///
+    /// match Display::open(None::<String>) {
+    ///     Ok(display) => println!("{:?}", display),
+    ///     Err(err) => {
+    ///         panic!("{:?}", err);
+    ///     }
+    /// }
+    ///
+    /// match Display::open(Some(":0")) {
+    ///     Ok(display) => println!("{:?}", display),
+    ///     Err(err) => {
+    ///         panic!("{:?}", err);
+    ///     }
+    /// }
+    /// ```
+    ///
     /// # Errors
     /// Returns a `x11oo::Error` if the display could not be opened
     pub fn open(name: Option<impl Into<String>>) -> Result<Self, Error> {
