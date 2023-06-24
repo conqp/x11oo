@@ -1,4 +1,3 @@
-use crate::util::PanicOr;
 use std::ffi::{c_char, CString};
 use std::fmt::Formatter;
 use std::ptr::NonNull;
@@ -19,85 +18,111 @@ pub struct Display {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum DisplayError {
+pub enum Error {
     CannotOpenDisplay,
     InvalidDisplayName,
 }
 
 impl Display {
-    pub fn open(name: Option<impl Into<String>>) -> Result<Self, DisplayError> {
-        match name {
-            Some(name) => Self::open_name(name.into()),
-            None => Self::open_raw(&0, None),
-        }
+    /// Opens an X display
+    /// # Arguments
+    /// * `name` - Optional display name to open
+    ///
+    /// # Errors
+    /// Returns a `x11oo::Error` if the display could not be opened
+    pub fn open(name: Option<impl Into<String>>) -> Result<Self, Error> {
+        name.map_or_else(
+            || Self::open_raw(&0, None),
+            |name| Self::open_name(name.into()),
+        )
     }
 
-    fn open_name(name: String) -> Result<Self, DisplayError> {
+    fn open_name(name: String) -> Result<Self, Error> {
         Self::open_raw(
             CString::new(name.as_str())
-                .map_err(|_| DisplayError::InvalidDisplayName)?
+                .map_err(|_| Error::InvalidDisplayName)?
                 .as_ptr(),
             Some(name),
         )
     }
 
-    fn open_raw(display: *const c_char, name: Option<String>) -> Result<Self, DisplayError> {
+    fn open_raw(display: *const c_char, name: Option<String>) -> Result<Self, Error> {
         let display = unsafe { XOpenDisplay(display) };
 
         if display.is_null() {
-            Err(DisplayError::CannotOpenDisplay)
+            Err(Error::CannotOpenDisplay)
         } else {
             NonNull::new(display)
                 .map(|display| Self { display, name })
-                .ok_or(DisplayError::CannotOpenDisplay)
+                .ok_or(Error::CannotOpenDisplay)
         }
     }
 
+    #[must_use]
     pub fn name(&self) -> Option<&str> {
         self.name.as_deref()
     }
 
-    pub fn activate_screen_saver(&self) -> &Self {
-        unsafe { XActivateScreenSaver(self.display.as_ptr()) }.panic_or(self)
+    /// # Panics
+    /// Panics on non-zero xlib return code
+    pub fn activate_screen_saver(&self) {
+        assert_eq!(unsafe { XActivateScreenSaver(self.display.as_ptr()) }, 0);
     }
 
+    #[must_use]
     pub fn add_extension(&self) -> XExtCodes {
         unsafe { *XAddExtension(self.display.as_ptr()) }
     }
 
-    pub fn add_host(&self, address: NonNull<XHostAddress>) -> &Self {
-        unsafe { XAddHost(self.display.as_ptr(), address.as_ptr()) }.panic_or(self)
+    /// # Panics
+    /// Panics on non-zero xlib return code
+    pub fn add_host(&self, address: NonNull<XHostAddress>) {
+        assert_eq!(
+            unsafe { XAddHost(self.display.as_ptr(), address.as_ptr()) },
+            0
+        );
     }
 
-    pub fn add_hosts(&self, address: NonNull<XHostAddress>, n: i32) -> &Self {
-        unsafe { XAddHosts(self.display.as_ptr(), address.as_ptr(), n) }.panic_or(self)
+    /// # Panics
+    /// Panics on non-zero xlib return code
+    pub fn add_hosts(&self, address: NonNull<XHostAddress>, n: i32) {
+        assert_eq!(
+            unsafe { XAddHosts(self.display.as_ptr(), address.as_ptr(), n) },
+            0
+        );
     }
 
-    pub fn add_to_save_set(&self, window: Window) -> &Self {
-        unsafe { XAddToSaveSet(self.display.as_ptr(), window) }.panic_or(self)
+    /// # Panics
+    /// Panics on non-zero xlib return code
+    pub fn add_to_save_set(&self, window: Window) {
+        assert_eq!(unsafe { XAddToSaveSet(self.display.as_ptr(), window) }, 0);
     }
 
     // TODO: implement all xlib functions that take a display as first argument as methods.
 
+    #[must_use]
     pub fn default_root_window(&self) -> Window {
         unsafe { XDefaultRootWindow(self.display.as_ptr()) }
     }
 
-    pub fn sync(&self, discard: bool) -> &Self {
-        unsafe { XSync(self.display.as_ptr(), discard as i32) }.panic_or(self)
+    /// # Panics
+    /// Panics on non-zero xlib return code
+    pub fn sync(&self, discard: bool) {
+        assert_eq!(
+            unsafe { XSync(self.display.as_ptr(), i32::from(discard)) },
+            0
+        );
     }
 }
 
 #[cfg(feature = "xfixes")]
 impl Display {
-    pub fn hide_cursor(&self, window: Window) -> &Self {
+    pub fn hide_cursor(&self, window: Window) {
         unsafe { XFixesHideCursor(self.display.as_ptr(), window) };
-        self
     }
 
-    pub fn show_cursor(&self, window: Window) -> &Self {
+    pub fn show_cursor(&self, window: Window) {
         unsafe { XFixesShowCursor(self.display.as_ptr(), window) };
-        self
     }
 }
 
@@ -110,7 +135,7 @@ impl Drop for Display {
     }
 }
 
-impl std::fmt::Display for DisplayError {
+impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::CannotOpenDisplay => write!(f, "Cannot open display"),
